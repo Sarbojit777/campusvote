@@ -3,7 +3,25 @@
 A secure, full-stack online voting platform built for Indian college students. Each institution gets its own isolated voting environment with OTP-verified student accounts, admin-controlled elections, and tamper-proof vote recording.
 
 ---
+## Screenshots
 
+### Landing Page
+![Landing](Landing%20page.png)
+
+### Student Login
+![Login](student%20login%20page.png)
+
+### Dashboard
+![Dashboard](dashboard.png)
+
+### Admin Login
+![Admin Login](Admin%20Login%20Page.png)
+
+### Admin View
+![Admin](Admin%20View.png)
+
+### Live Stats
+![Live Stats](Live%20Stats.png)
 ## Features
 
 - **Multi-institution support** — 20+ Indian colleges preloaded, each with verified email suffix validation
