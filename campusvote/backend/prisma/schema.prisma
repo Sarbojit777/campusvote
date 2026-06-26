@@ -1,0 +1,89 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Institution {
+  id          String   @id @default(uuid())
+  name        String
+  emailSuffix String   @unique
+  logoUrl     String?
+  createdAt   DateTime @default(now())
+
+  users   User[]
+  admins  Admin[]
+  events  VotingEvent[]
+}
+
+model User {
+  id            String   @id @default(uuid())
+  email         String   @unique
+  passwordHash  String
+  votingId      String   @unique
+  institutionId String
+  isVerified    Boolean  @default(true)
+  createdAt     DateTime @default(now())
+
+  institution Institution @relation(fields: [institutionId], references: [id])
+  votes       Vote[]
+}
+
+model Admin {
+  id            String   @id @default(uuid())
+  email         String   @unique
+  passwordHash  String
+  institutionId String?
+  isSuperAdmin  Boolean  @default(false)
+  createdAt     DateTime @default(now())
+
+  institution Institution? @relation(fields: [institutionId], references: [id])
+  events      VotingEvent[]
+}
+
+model VotingEvent {
+  id               String   @id @default(uuid())
+  title            String
+  description      String?
+  institutionId    String
+  createdBy        String
+  startsAt         DateTime
+  endsAt           DateTime
+  resultsPublished Boolean  @default(false)
+  createdAt        DateTime @default(now())
+
+  institution Institution @relation(fields: [institutionId], references: [id])
+  admin       Admin        @relation(fields: [createdBy], references: [id])
+  candidates  Candidate[]
+  votes       Vote[]
+}
+
+model Candidate {
+  id            String   @id @default(uuid())
+  name          String
+  photoUrl      String?
+  bio           String?
+  position      String
+  votingEventId String
+  createdAt     DateTime @default(now())
+
+  votingEvent VotingEvent @relation(fields: [votingEventId], references: [id], onDelete: Cascade)
+  votes       Vote[]
+}
+
+model Vote {
+  id            String   @id @default(uuid())
+  userId        String
+  candidateId   String
+  votingEventId String
+  castedAt      DateTime @default(now())
+
+  user      User        @relation(fields: [userId], references: [id])
+  candidate Candidate   @relation(fields: [candidateId], references: [id])
+  event     VotingEvent @relation(fields: [votingEventId], references: [id])
+
+  @@unique([userId, votingEventId])
+}
